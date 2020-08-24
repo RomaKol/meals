@@ -35,9 +35,17 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => CategoriesScreen(),
-//        '/category': (context) => CategoryScreen(),
         CategoryScreen.routeName: (context) => CategoryScreen(),
         MealDetailScreen.routeName: (context) => MealDetailScreen(),
+      },
+//      dynamic changing route
+      onGenerateRoute: (settings) {
+        print(settings.arguments);
+        return MaterialPageRoute(builder: (context) => CategoriesScreen());
+      },
+//      default 404 route
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(builder: (context) => CategoriesScreen());
       },
     );
   }
