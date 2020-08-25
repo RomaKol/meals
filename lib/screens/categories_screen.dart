@@ -7,26 +7,21 @@ import '../test_data.dart';
 class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories'),
+    return GridView(
+      children: TEST_CATEGORIES
+          .map((category) => CategoryItem(
+                category.id,
+                category.title,
+                category.color,
+              ))
+          .toList(),
+      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 200,
+        childAspectRatio: 1.5,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
       ),
-      body: GridView(
-        children: TEST_CATEGORIES
-            .map((category) => CategoryItem(
-                  category.id,
-                  category.title,
-                  category.color,
-                ))
-            .toList(),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 1.5,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-        ),
-        padding: EdgeInsets.all(20),
-      ),
+      padding: EdgeInsets.all(20),
     );
   }
 }
