@@ -5,11 +5,47 @@ import './screens/category_screen.dart';
 import './screens/meal_detail_screen.dart';
 import './screens/tabs_screen.dart';
 import './screens/filters_screen.dart';
+import './models/meal.dart';
+import './test_data.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> _filters = {
+    'glutenFree': false,
+    'lactoseFree': false,
+    'vegetarian': false,
+    'vegan': false,
+  };
+  List<Meal> _availableMeals = TEST_MEALS;
+
+  void _setFilters(Map<String, bool> filterData) {
+    setState(() {
+      this._filters = filterData;
+      this._availableMeals = TEST_MEALS.where((meal) {
+        if (!meal.isGlutenFree && _filters['glutenFree']) {
+          return false;
+        }
+        if (!meal.isLactoseFree && _filters['lactoseFree']) {
+          return false;
+        }
+        if (!meal.isVegetarian && _filters['vegetarian']) {
+          return false;
+        }
+        if (!meal.isVegan && _filters['vegan']) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,9 +73,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => TabsScreen(),
-        CategoryScreen.routeName: (context) => CategoryScreen(),
+        CategoryScreen.routeName: (context) =>
+            CategoryScreen(this._availableMeals),
         MealDetailScreen.routeName: (context) => MealDetailScreen(),
-        FilterScreen.routeName: (context) => FilterScreen(),
+        FilterScreen.routeName: (context) => FilterScreen(
+              this._filters,
+              this._setFilters,
+            ),
       },
 //      dynamic changing route
       onGenerateRoute: (settings) {
@@ -50,36 +90,6 @@ class MyApp extends StatelessWidget {
       onUnknownRoute: (settings) {
         return MaterialPageRoute(builder: (context) => CategoriesScreen());
       },
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Text',
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
